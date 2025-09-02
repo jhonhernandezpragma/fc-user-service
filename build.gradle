@@ -31,6 +31,7 @@ ext {
 	lombokVersion = "1.18.38"
 	lombokMapstructBindingVersion = "0.2.0"
 	openApiVersion = "1.8.0"
+	springSecurityVersion = "6.5.3"
 }
 
 dependencies {
@@ -41,7 +42,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
+	implementation "org.springframework.security:spring-security-core:${springSecurityVersion}"
 
 	// Flyway + DB
 	implementation 'org.flywaydb:flyway-core'
