@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: user_service
+    description: user microservice
+    version: 1.0.0
+  profiles:
+    active: local
