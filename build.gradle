@@ -30,8 +30,9 @@ ext {
 	mapstructVersion = "1.6.3"
 	lombokVersion = "1.18.38"
 	lombokMapstructBindingVersion = "0.2.0"
-	openApiVersion = "1.8.0"
+	openApiStarterVersion = "2.8.11"
 	springSecurityVersion = "6.5.3"
+	openapiWebMvcUIVersion = "2.8.11"
 }
 
 dependencies {
@@ -59,10 +60,10 @@ dependencies {
 	annotationProcessor "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
 
 	// Springdoc
-	implementation "org.springdoc:springdoc-openapi-ui:${openApiVersion}"
-
+	implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${openApiStarterVersion}"
 	// JUnit
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
 }
 
 tasks.named('test') {

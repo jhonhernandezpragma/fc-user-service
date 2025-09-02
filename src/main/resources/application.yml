@@ -1,7 +1,7 @@
 spring:
   application:
     name: user_service
-    description: user microservice
+    description: User Service microservice responsible for authentication, authorization, role management, and user creation.
     version: 1.0.0
   profiles:
     active: local
