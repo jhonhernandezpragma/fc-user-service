@@ -7,12 +7,10 @@ import com.pragma.fc.user_service.domain.model.Role;
 import com.pragma.fc.user_service.domain.model.User;
 import com.pragma.fc.user_service.domain.spi.IPasswordEncryptorPort;
 import com.pragma.fc.user_service.domain.spi.IUserPersistencePort;
-import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
 import java.time.Period;
 
-@Slf4j
 public class UserUseCase implements IUserServicePort {
     private final IUserPersistencePort userPersistencePort;
     private final IPasswordEncryptorPort passwordEncryptorPort;
