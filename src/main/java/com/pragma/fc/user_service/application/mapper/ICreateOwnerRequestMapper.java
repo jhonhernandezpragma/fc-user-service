@@ -11,6 +11,5 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
 public interface ICreateOwnerRequestMapper {
-    CreateOwnerRequestDto toDto(User user);
     User toModel(CreateOwnerRequestDto dto);
 }
