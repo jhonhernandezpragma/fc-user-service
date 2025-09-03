@@ -2,6 +2,7 @@ package com.pragma.fc.user_service.infraestructure.input.rest;
 
 import com.pragma.fc.user_service.application.dto.request.CreateOwnerRequestDto;
 import com.pragma.fc.user_service.application.dto.response.CreateOwnerResponseDto;
+import com.pragma.fc.user_service.application.dto.response.RoleResponseDto;
 import com.pragma.fc.user_service.application.handler.IUserHandler;
 import com.pragma.fc.user_service.infraestructure.input.rest.dto.ApiError;
 import com.pragma.fc.user_service.infraestructure.input.rest.dto.ApiSuccess;
@@ -12,6 +13,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +49,26 @@ public class UserController {
                 .status(HttpStatus.CREATED)
                 .body(new ApiSuccess<>(
                         "Owner created successfully",
+                        response
+                ));
+    }
+
+    @Operation(description = "Obtain user role",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "User role retrieved successfully",
+                            content = @Content(schema = @Schema(implementation = RoleResponseDto.class)))
+            }
+    )
+    @GetMapping("{documentNumber}/role")
+    public ResponseEntity<ApiSuccess<RoleResponseDto>> getUserRole(@PathVariable Long documentNumber) {
+        RoleResponseDto response = userHandler.getUserRole(documentNumber);
+
+        System.out.println(response.getName());
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ApiSuccess<>(
+                        "User role retrieved successfully",
                         response
                 ));
     }
