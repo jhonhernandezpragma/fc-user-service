@@ -37,7 +37,8 @@ To get a local copy up and running follow these steps.
 ## Usage
 
 1. Right-click the class FcUserServiceApplication and choose Run
-2. Open [http://localhost:8081/swagger-ui/index.html](http://localhost:8081/swagger-ui/index.html) in your web browser
+2. Open [http://localhost:8081/swagger-ui/index.html](http://localhost:8081/swagger-ui/index.html) in your web browser for documentation (OpenApi UI)
+3. Open [http://localhost:8081/v3/api-docs](http://localhost:8081/v3/api-docs) in your web browser for documentation (OpenApi JSON)
 
 ## Tests
 
