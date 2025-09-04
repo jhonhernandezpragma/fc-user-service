@@ -1,6 +1,6 @@
 -- Table Definition
 CREATE TABLE "public"."roles" (
-    "id" int4 NOT NULL,
+    "id" int4 GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "name" varchar(50) NOT NULL,
     PRIMARY KEY ("id")
 );
