@@ -25,12 +25,12 @@ public class UserUseCase implements IUserServicePort {
         Boolean existsUserByEmail = userPersistencePort.existUserByEmail(user.getEmail());
         Boolean existsUserByDocumentNumber = userPersistencePort.existUserByDocumentNumber(user.getDocumentNumber());
 
-        if(existsUserByEmail || existsUserByDocumentNumber) {
+        if (existsUserByEmail || existsUserByDocumentNumber) {
             throw new UserAlreadyExistsException();
         }
 
         int age = Period.between(user.getBirthDate(), LocalDate.now()).getYears();
-        if(age < 18) {
+        if (age < 18) {
             throw new UserUnderageException(user.getBirthDate());
         }
 
@@ -39,5 +39,10 @@ public class UserUseCase implements IUserServicePort {
 
         user.setRole(Role.OWNER);
         return userPersistencePort.createUser(user);
+    }
+
+    @Override
+    public Role getUserRole(Long documentNumber) {
+        return userPersistencePort.getRoleByUserDocumentNumber(documentNumber);
     }
 }
