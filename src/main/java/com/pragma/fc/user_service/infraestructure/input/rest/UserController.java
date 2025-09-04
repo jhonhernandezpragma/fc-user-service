@@ -63,8 +63,6 @@ public class UserController {
     public ResponseEntity<ApiSuccess<RoleResponseDto>> getUserRole(@PathVariable Long documentNumber) {
         RoleResponseDto response = userHandler.getUserRole(documentNumber);
 
-        System.out.println(response.getName());
-
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new ApiSuccess<>(
