@@ -12,7 +12,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class CreateOwnerResponseDtoTest {
+class UserResponseDtoTest {
 
     @Test
     void shouldSerializeOnlyExpectedFields() throws JsonProcessingException {
@@ -22,7 +22,7 @@ class CreateOwnerResponseDtoTest {
         RoleResponseDto roleDto = new RoleResponseDto();
         roleDto.setName("OWNER");
 
-        CreateOwnerResponseDto dto = new CreateOwnerResponseDto();
+        UserResponseDto dto = new UserResponseDto();
         dto.setDocumentNumber(123L);
         dto.setName("John");
         dto.setLastname("Doe");
@@ -53,7 +53,7 @@ class CreateOwnerResponseDtoTest {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
 
-        CreateOwnerResponseDto dto = new CreateOwnerResponseDto();
+        UserResponseDto dto = new UserResponseDto();
         dto.setBirthDate(LocalDate.of(1990, 1, 1));
 
         String json = mapper.writeValueAsString(dto);

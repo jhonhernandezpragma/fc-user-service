@@ -1,7 +1,7 @@
 package com.pragma.fc.user_service.infraestructure.configuration;
 
+import com.pragma.fc.user_service.domain.api.IAuthServicePort;
 import com.pragma.fc.user_service.domain.api.IUserServicePort;
-import com.pragma.fc.user_service.domain.spi.IPasswordEncryptorPort;
 import com.pragma.fc.user_service.domain.spi.IUserPersistencePort;
 import com.pragma.fc.user_service.domain.usecase.UserUseCase;
 import com.pragma.fc.user_service.infraestructure.out.jpa.adapter.UserJpaAdapter;
@@ -12,6 +12,7 @@ import com.pragma.fc.user_service.infraestructure.out.jpa.repository.IUserReposi
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
 @Configuration
 @RequiredArgsConstructor
@@ -20,11 +21,10 @@ public class UserBeanConfiguration {
     private final IRoleEntityMapper roleEntityMapper;
     private final IUserRepository userRepository;
     private final IRoleRepository roleRepository;
-    private final IPasswordEncryptorPort passwordEncryptorPort;
 
     @Bean
-    public IUserServicePort userServicePort() {
-        return new UserUseCase(userPersistencePort(), passwordEncryptorPort);
+    public IUserServicePort userServicePort(@Lazy IAuthServicePort authServicePort) {
+        return new UserUseCase(userPersistencePort(), authServicePort);
     }
 
     @Bean

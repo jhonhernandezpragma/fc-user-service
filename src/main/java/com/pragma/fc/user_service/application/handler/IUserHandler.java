@@ -1,11 +1,11 @@
 package com.pragma.fc.user_service.application.handler;
 
 import com.pragma.fc.user_service.application.dto.request.CreateOwnerRequestDto;
-import com.pragma.fc.user_service.application.dto.response.CreateOwnerResponseDto;
 import com.pragma.fc.user_service.application.dto.response.RoleResponseDto;
+import com.pragma.fc.user_service.application.dto.response.UserResponseDto;
 
 public interface IUserHandler {
-    CreateOwnerResponseDto createOwner(CreateOwnerRequestDto dto);
+    UserResponseDto createOwner(CreateOwnerRequestDto dto);
 
     RoleResponseDto getUserRole(Long documentNumber);
 }

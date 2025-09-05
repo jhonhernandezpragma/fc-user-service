@@ -11,4 +11,6 @@ public interface IUserPersistencePort {
     Boolean existUserByDocumentNumber(Long documentNumber);
 
     Role getRoleByUserDocumentNumber(Long documentNumber);
+
+    User findUserByEmail(String email);
 }

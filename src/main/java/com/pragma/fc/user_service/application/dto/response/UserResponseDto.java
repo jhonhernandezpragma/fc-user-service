@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class CreateOwnerResponseDto {
+public class UserResponseDto {
     private Long documentNumber;
     private String name;
     private String lastname;

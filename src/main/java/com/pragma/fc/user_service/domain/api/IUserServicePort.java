@@ -7,4 +7,6 @@ public interface IUserServicePort {
     User createOwner(User user);
 
     Role getUserRole(Long documentNumber);
+
+    User findUserByEmail(String email);
 }
