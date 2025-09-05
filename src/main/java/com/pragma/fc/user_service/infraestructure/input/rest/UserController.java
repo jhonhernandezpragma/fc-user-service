@@ -32,7 +32,7 @@ public class UserController {
     @Operation(summary = "Create user owner",
             responses = {
                     @ApiResponse(responseCode = "201", description = "User created",
-                            content = @Content(schema = @Schema(implementation = CreateOwnerResponseDto.class))),
+                            content = @Content(schema = @Schema(implementation = UserResponseDto.class))),
                     @ApiResponse(responseCode = "409", description = "User already exists",
                             content = @Content(schema = @Schema(implementation = ApiError.class))),
                     @ApiResponse(responseCode = "400", description = """
@@ -43,8 +43,8 @@ public class UserController {
             }
     )
     @PostMapping("/owner")
-    public ResponseEntity<ApiSuccess<CreateOwnerResponseDto>> createOwner(@RequestBody @Valid CreateOwnerRequestDto dto) {
-        CreateOwnerResponseDto response = userHandler.createOwner(dto);
+    public ResponseEntity<ApiSuccess<UserResponseDto>> createOwner(@RequestBody @Valid CreateOwnerRequestDto dto) {
+        UserResponseDto response = userHandler.createOwner(dto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new ApiSuccess<>(
