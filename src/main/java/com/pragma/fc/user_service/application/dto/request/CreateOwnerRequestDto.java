@@ -47,7 +47,7 @@ public class CreateOwnerRequestDto {
     @NotBlank
     @NotNull
     @Pattern(
-            regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,50}$\n",
+            regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,50}$",
             message = "Password must have 8-50 chars, at least 1 uppercase, 1 lowercase, 1 number and 1 special char"
     )
     private String password;
