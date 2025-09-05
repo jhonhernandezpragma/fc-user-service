@@ -1,10 +1,10 @@
 package com.pragma.fc.user_service.domain.usecase;
 
+import com.pragma.fc.user_service.domain.api.IAuthServicePort;
 import com.pragma.fc.user_service.domain.exception.UserAlreadyExistsException;
 import com.pragma.fc.user_service.domain.exception.UserUnderageException;
 import com.pragma.fc.user_service.domain.model.Role;
 import com.pragma.fc.user_service.domain.model.User;
-import com.pragma.fc.user_service.domain.spi.IPasswordEncryptorPort;
 import com.pragma.fc.user_service.domain.spi.IUserPersistencePort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ class UserUseCaseTest {
     private IUserPersistencePort userPersistencePort;
 
     @Mock
-    private IPasswordEncryptorPort passwordEncryptorPort;
+    private IAuthServicePort authServicePort;
 
     @BeforeEach
     void beforeEach() {
@@ -59,7 +59,7 @@ class UserUseCaseTest {
 
     @Test
     void shouldCreateOwnerUser() {
-        when(passwordEncryptorPort.encrypt(anyString()))
+        when(authServicePort.encryptPassword(anyString()))
                 .thenReturn("encryptedPass");
 
         when(userPersistencePort.createUser(any(User.class)))
@@ -79,7 +79,7 @@ class UserUseCaseTest {
 
     @Test
     void shouldCreateOwnerUserEvenIfAnotherRoleIsProvided() {
-        when(passwordEncryptorPort.encrypt(anyString()))
+        when(authServicePort.encryptPassword(anyString()))
                 .thenReturn("encryptedPass");
 
         when(userPersistencePort.createUser(any(User.class)))
@@ -94,7 +94,7 @@ class UserUseCaseTest {
 
     @Test
     void shouldEncryptPasswordWhenCreatingOwner() {
-        when(passwordEncryptorPort.encrypt(anyString()))
+        when(authServicePort.encryptPassword(anyString()))
                 .thenReturn("encryptedPass");
 
         when(userPersistencePort.createUser(any(User.class)))
