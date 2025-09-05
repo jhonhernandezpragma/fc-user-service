@@ -1,10 +1,9 @@
 -- Table Definition
 CREATE TABLE "public"."roles" (
-    "id" int4 GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    "id" int4 GENERATED ALWAYS AS IDENTITY,
     "name" varchar(50) NOT NULL,
     PRIMARY KEY ("id")
 );
-
 
 -- Indices
 CREATE UNIQUE INDEX roles_name_key ON public.roles USING btree (name);
