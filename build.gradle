@@ -33,6 +33,7 @@ ext {
     openApiStarterVersion = "2.8.11"
     springSecurityVersion = "6.5.3"
     openapiWebMvcUIVersion = "2.8.11"
+    jjwtVersion = "0.11.5"
 }
 
 dependencies {
@@ -68,6 +69,10 @@ dependencies {
     // JUnit
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+    // JJWT
+    implementation "io.jsonwebtoken:jjwt-api:${jjwtVersion}"
+    runtimeOnly "io.jsonwebtoken:jjwt-impl:${jjwtVersion}"
+    runtimeOnly "io.jsonwebtoken:jjwt-jackson:${jjwtVersion}"
 }
 
 tasks.named('test') {
