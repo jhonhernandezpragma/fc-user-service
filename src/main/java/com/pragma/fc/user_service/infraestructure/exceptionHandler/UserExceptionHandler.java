@@ -3,6 +3,7 @@ package com.pragma.fc.user_service.infraestructure.exceptionHandler;
 import com.pragma.fc.user_service.domain.exception.UserAlreadyExistsException;
 import com.pragma.fc.user_service.domain.exception.UserUnderageException;
 import com.pragma.fc.user_service.infraestructure.exception.RoleNotFoundException;
+import com.pragma.fc.user_service.infraestructure.exception.UserNotFoundException;
 import com.pragma.fc.user_service.infraestructure.input.rest.dto.ApiError;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -29,5 +30,10 @@ public class UserExceptionHandler {
     @ExceptionHandler(RoleNotFoundException.class)
     public ResponseEntity<ApiError> handleRoleNotFound(RoleNotFoundException ex, WebRequest request) {
         return ErrorUtils.buildError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ApiError> handleUserNotFound(UserNotFoundException ex, WebRequest request) {
+        return ErrorUtils.buildError(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
     }
 }

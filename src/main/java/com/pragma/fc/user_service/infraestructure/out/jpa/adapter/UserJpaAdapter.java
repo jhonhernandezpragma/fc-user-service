@@ -4,6 +4,7 @@ import com.pragma.fc.user_service.domain.model.Role;
 import com.pragma.fc.user_service.domain.model.User;
 import com.pragma.fc.user_service.domain.spi.IUserPersistencePort;
 import com.pragma.fc.user_service.infraestructure.exception.RoleNotFoundException;
+import com.pragma.fc.user_service.infraestructure.exception.UserNotFoundException;
 import com.pragma.fc.user_service.infraestructure.out.jpa.entity.RoleEntity;
 import com.pragma.fc.user_service.infraestructure.out.jpa.entity.UserEntity;
 import com.pragma.fc.user_service.infraestructure.out.jpa.mapper.IRoleEntityMapper;
@@ -51,5 +52,13 @@ public class UserJpaAdapter implements IUserPersistencePort {
     public Role getRoleByUserDocumentNumber(Long documentNumber) {
         RoleEntity roleEntity = userRepository.findRoleByUserId(documentNumber);
         return roleEntityMapper.toModel(roleEntity);
+    }
+
+    @Override
+    public User findUserByEmail(String email) {
+        UserEntity userEntity = userRepository.findByEmail(email)
+                .orElseThrow(UserNotFoundException::new);
+
+        return userEntityMapper.toModel(userEntity);
     }
 }
