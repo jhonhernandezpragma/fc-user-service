@@ -45,4 +45,9 @@ public class UserUseCase implements IUserServicePort {
     public Role getUserRole(Long documentNumber) {
         return userPersistencePort.getRoleByUserDocumentNumber(documentNumber);
     }
+
+    @Override
+    public User findUserByEmail(String email) {
+        return userPersistencePort.findUserByEmail(email);
+    }
 }
