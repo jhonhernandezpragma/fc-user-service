@@ -1,11 +1,11 @@
 package com.pragma.fc.user_service.domain.usecase;
 
+import com.pragma.fc.user_service.domain.api.IAuthServicePort;
 import com.pragma.fc.user_service.domain.api.IUserServicePort;
 import com.pragma.fc.user_service.domain.exception.UserAlreadyExistsException;
 import com.pragma.fc.user_service.domain.exception.UserUnderageException;
 import com.pragma.fc.user_service.domain.model.Role;
 import com.pragma.fc.user_service.domain.model.User;
-import com.pragma.fc.user_service.domain.spi.IPasswordEncryptorPort;
 import com.pragma.fc.user_service.domain.spi.IUserPersistencePort;
 
 import java.time.LocalDate;
@@ -13,11 +13,11 @@ import java.time.Period;
 
 public class UserUseCase implements IUserServicePort {
     private final IUserPersistencePort userPersistencePort;
-    private final IPasswordEncryptorPort passwordEncryptorPort;
+    private final IAuthServicePort authServicePort;
 
-    public UserUseCase(IUserPersistencePort userPersistencePort, IPasswordEncryptorPort passwordEncryptorPort) {
+    public UserUseCase(IUserPersistencePort userPersistencePort, IAuthServicePort authServicePort) {
         this.userPersistencePort = userPersistencePort;
-        this.passwordEncryptorPort = passwordEncryptorPort;
+        this.authServicePort = authServicePort;
     }
 
     @Override
@@ -34,7 +34,7 @@ public class UserUseCase implements IUserServicePort {
             throw new UserUnderageException(user.getBirthDate());
         }
 
-        String encryptedPassword = passwordEncryptorPort.encrypt(user.getPassword());
+        String encryptedPassword = authServicePort.encryptPassword(user.getPassword());
         user.setPassword(encryptedPassword);
 
         user.setRole(Role.OWNER);

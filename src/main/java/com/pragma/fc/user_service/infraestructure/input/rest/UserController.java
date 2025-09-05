@@ -1,8 +1,8 @@
 package com.pragma.fc.user_service.infraestructure.input.rest;
 
 import com.pragma.fc.user_service.application.dto.request.CreateOwnerRequestDto;
-import com.pragma.fc.user_service.application.dto.response.CreateOwnerResponseDto;
 import com.pragma.fc.user_service.application.dto.response.RoleResponseDto;
+import com.pragma.fc.user_service.application.dto.response.UserResponseDto;
 import com.pragma.fc.user_service.application.handler.IUserHandler;
 import com.pragma.fc.user_service.infraestructure.input.rest.dto.ApiError;
 import com.pragma.fc.user_service.infraestructure.input.rest.dto.ApiSuccess;
@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +30,9 @@ public class UserController {
         this.userHandler = userHandler;
     }
 
-    @Operation(summary = "Create user owner",
+    @Operation(
+            summary = "Create user",
+            description = "Requires role ADMIN",
             responses = {
                     @ApiResponse(responseCode = "201", description = "User created",
                             content = @Content(schema = @Schema(implementation = UserResponseDto.class))),
@@ -40,8 +43,13 @@ public class UserController {
                             2. User must be at least 18 years old
                             """,
                             content = @Content(schema = @Schema(implementation = ApiError.class))),
+                    @ApiResponse(responseCode = "401", description = "User already exists",
+                            content = @Content(schema = @Schema(implementation = ApiError.class))),
+                    @ApiResponse(responseCode = "403", description = "Missing or invalid access token",
+                            content = @Content(schema = @Schema(implementation = ApiError.class))),
             }
     )
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/owner")
     public ResponseEntity<ApiSuccess<UserResponseDto>> createOwner(@RequestBody @Valid CreateOwnerRequestDto dto) {
         UserResponseDto response = userHandler.createOwner(dto);
@@ -53,12 +61,19 @@ public class UserController {
                 ));
     }
 
-    @Operation(description = "Obtain user role",
+    @Operation(
+            summary = "Obtain user",
+            description = "Requires role ADMIN",
             responses = {
                     @ApiResponse(responseCode = "200", description = "User role retrieved successfully",
-                            content = @Content(schema = @Schema(implementation = RoleResponseDto.class)))
+                            content = @Content(schema = @Schema(implementation = RoleResponseDto.class))),
+                    @ApiResponse(responseCode = "401", description = "User already exists",
+                            content = @Content(schema = @Schema(implementation = ApiError.class))),
+                    @ApiResponse(responseCode = "403", description = "Missing or invalid access token",
+                            content = @Content(schema = @Schema(implementation = ApiError.class)))
             }
     )
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("{documentNumber}/role")
     public ResponseEntity<ApiSuccess<RoleResponseDto>> getUserRole(@PathVariable Long documentNumber) {
         RoleResponseDto response = userHandler.getUserRole(documentNumber);
