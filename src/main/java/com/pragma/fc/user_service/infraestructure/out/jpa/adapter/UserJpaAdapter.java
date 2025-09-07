@@ -61,4 +61,12 @@ public class UserJpaAdapter implements IUserPersistencePort {
 
         return userEntityMapper.toModel(userEntity);
     }
+
+    @Override
+    public User findUserByDocumentNumber(Long documentNumber) {
+        UserEntity userEntity = userRepository.findById(documentNumber)
+                .orElseThrow(UserNotFoundException::new);
+
+        return userEntityMapper.toModel(userEntity);
+    }
 }
