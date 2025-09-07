@@ -12,14 +12,14 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class CreateOwnerRequestDtoTest {
+class CreateUserRequestDtoTest {
 
     @Test
     void shouldSerializeOnlyExpectedFields() throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
 
-        CreateOwnerRequestDto dto = new CreateOwnerRequestDto();
+        CreateUserRequestDto dto = new CreateUserRequestDto();
         dto.setDocumentNumber(123L);
         dto.setName("John");
         dto.setLastname("Doe");
@@ -52,7 +52,7 @@ class CreateOwnerRequestDtoTest {
 
         String json = "{ \"birthDate\": \"1990-01-01\" }";
 
-        CreateOwnerRequestDto dto = mapper.readValue(json, CreateOwnerRequestDto.class);
+        CreateUserRequestDto dto = mapper.readValue(json, CreateUserRequestDto.class);
 
         assertThat(dto.getBirthDate()).isEqualTo(LocalDate.of(1990, 1, 1));
     }

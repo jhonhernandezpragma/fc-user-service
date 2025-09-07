@@ -1,12 +1,14 @@
 package com.pragma.fc.user_service.domain.usecase;
 
 import com.pragma.fc.user_service.domain.api.IAuthServicePort;
+import com.pragma.fc.user_service.domain.exception.OwnerRestaurantNotFoundException;
 import com.pragma.fc.user_service.domain.exception.UserAlreadyExistsException;
 import com.pragma.fc.user_service.domain.exception.UserUnderageException;
 import com.pragma.fc.user_service.domain.model.Role;
 import com.pragma.fc.user_service.domain.model.User;
+import com.pragma.fc.user_service.domain.spi.IRestaurantClientPort;
 import com.pragma.fc.user_service.domain.spi.IUserPersistencePort;
-import org.junit.jupiter.api.BeforeEach;
+import com.pragma.fc.user_service.infraestructure.exception.UserNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,6 +28,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserUseCaseTest {
+
     @InjectMocks
     private UserUseCase userUseCase;
 
@@ -35,14 +38,8 @@ class UserUseCaseTest {
     @Mock
     private IAuthServicePort authServicePort;
 
-    @BeforeEach
-    void beforeEach() {
-        when(userPersistencePort.existUserByEmail(anyString()))
-                .thenReturn(false);
-
-        when(userPersistencePort.existUserByDocumentNumber(anyLong()))
-                .thenReturn(false);
-    }
+    @Mock
+    private IRestaurantClientPort restaurantClientPort;
 
     User createUser(Role role) {
         return new User(
@@ -57,16 +54,15 @@ class UserUseCaseTest {
         );
     }
 
+
     @Test
     void shouldCreateOwnerUser() {
-        when(authServicePort.encryptPassword(anyString()))
-                .thenReturn("encryptedPass");
-
-        when(userPersistencePort.createUser(any(User.class)))
-                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(userPersistencePort.existUserByEmail(anyString())).thenReturn(false);
+        when(userPersistencePort.existUserByDocumentNumber(anyLong())).thenReturn(false);
+        when(authServicePort.encryptPassword(anyString())).thenReturn("encryptedPass");
+        when(userPersistencePort.createUser(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         User user = createUser(null);
-
         User newOwner = userUseCase.createOwner(user);
 
         assertThat(newOwner.getDocumentNumber()).isEqualTo(12345L);
@@ -79,14 +75,12 @@ class UserUseCaseTest {
 
     @Test
     void shouldCreateOwnerUserEvenIfAnotherRoleIsProvided() {
-        when(authServicePort.encryptPassword(anyString()))
-                .thenReturn("encryptedPass");
-
-        when(userPersistencePort.createUser(any(User.class)))
-                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(userPersistencePort.existUserByEmail(anyString())).thenReturn(false);
+        when(userPersistencePort.existUserByDocumentNumber(anyLong())).thenReturn(false);
+        when(authServicePort.encryptPassword(anyString())).thenReturn("encryptedPass");
+        when(userPersistencePort.createUser(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         User user = createUser(Role.ADMIN);
-
         User newOwner = userUseCase.createOwner(user);
 
         assertThat(newOwner.getRole()).isEqualTo(Role.OWNER);
@@ -94,14 +88,12 @@ class UserUseCaseTest {
 
     @Test
     void shouldEncryptPasswordWhenCreatingOwner() {
-        when(authServicePort.encryptPassword(anyString()))
-                .thenReturn("encryptedPass");
-
-        when(userPersistencePort.createUser(any(User.class)))
-                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(userPersistencePort.existUserByEmail(anyString())).thenReturn(false);
+        when(userPersistencePort.existUserByDocumentNumber(anyLong())).thenReturn(false);
+        when(authServicePort.encryptPassword(anyString())).thenReturn("encryptedPass");
+        when(userPersistencePort.createUser(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         User user = createUser(null);
-
         User newOwner = userUseCase.createOwner(user);
 
         assertThat(newOwner.getPassword()).isEqualTo("encryptedPass");
@@ -109,8 +101,7 @@ class UserUseCaseTest {
 
     @Test
     void shouldNotCreateOwnerIfEmailAlreadyExists() {
-        when(userPersistencePort.existUserByEmail(anyString()))
-                .thenReturn(true);
+        when(userPersistencePort.existUserByEmail(anyString())).thenReturn(true);
 
         User user = createUser(null);
 
@@ -120,15 +111,13 @@ class UserUseCaseTest {
 
     @Test
     void shouldNotCreateOwnerIfDocumentNumberAlreadyExists() {
-        when(userPersistencePort.existUserByDocumentNumber(anyLong()))
-                .thenReturn(true);
+        when(userPersistencePort.existUserByDocumentNumber(anyLong())).thenReturn(true);
 
         User user = createUser(null);
 
         assertThatThrownBy(() -> userUseCase.createOwner(user))
                 .isInstanceOf(UserAlreadyExistsException.class);
     }
-
 
     @Test
     void shouldNotCreateOwnerIfUnderage() {
@@ -139,4 +128,96 @@ class UserUseCaseTest {
                 .isInstanceOf(UserUnderageException.class)
                 .hasMessageContaining(user.getBirthDate().toString());
     }
+
+    @Test
+    void shouldReturnUserRole() {
+        when(userPersistencePort.getRoleByUserDocumentNumber(12345L)).thenReturn(Role.ADMIN);
+
+        Role role = userUseCase.getUserRole(12345L);
+
+        assertThat(role).isEqualTo(Role.ADMIN);
+    }
+
+
+    @Test
+    void shouldFindUserByEmail() {
+        User user = createUser(Role.CUSTOMER);
+        when(userPersistencePort.findUserByEmail("john.doe@example.com")).thenReturn(user);
+
+        User result = userUseCase.findUserByEmail("john.doe@example.com");
+
+        assertThat(result).isEqualTo(user);
+    }
+
+    @Test
+    void shouldFindUserByDocumentNumber() {
+        User user = createUser(Role.CUSTOMER);
+        when(userPersistencePort.findUserByDocumentNumber(12345L)).thenReturn(user);
+
+        User result = userUseCase.findUserByDocumentNumber(12345L);
+
+        assertThat(result).isEqualTo(user);
+    }
+
+    @Test
+    void shouldCreateWorkerSuccessfully() {
+        User worker = createUser(null);
+        worker.setEmail("worker@example.com");
+        worker.setDocumentNumber(67890L);
+
+        when(userPersistencePort.existUserByDocumentNumber(12345L)).thenReturn(true);
+        when(userPersistencePort.existUserByEmail(worker.getEmail())).thenReturn(false);
+        when(userPersistencePort.existUserByDocumentNumber(worker.getDocumentNumber())).thenReturn(false);
+        when(authServicePort.encryptPassword(anyString())).thenReturn("encryptedPass");
+        when(userPersistencePort.createUser(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(restaurantClientPort.getRestaurantNitByOwner()).thenReturn(111L);
+
+        User newWorker = userUseCase.createWorker(12345L, worker);
+
+        assertThat(newWorker.getRole()).isEqualTo(Role.WORKER);
+        verify(restaurantClientPort).assignWorkerToRestaurant(111L, 67890L);
+    }
+
+
+    @Test
+    void shouldNotCreateWorkerIfOwnerDoesNotExist() {
+        when(userPersistencePort.existUserByDocumentNumber(12345L)).thenReturn(false);
+
+        User worker = createUser(null);
+
+        assertThatThrownBy(() -> userUseCase.createWorker(12345L, worker))
+                .isInstanceOf(UserNotFoundException.class)
+                .hasMessageContaining("Owner with document 12345 does not exist");
+    }
+
+    @Test
+    void shouldNotCreateWorkerIfEmailOrDocumentAlreadyExists() {
+        when(userPersistencePort.existUserByDocumentNumber(12345L)).thenReturn(true);
+        when(userPersistencePort.existUserByEmail(anyString())).thenReturn(true);
+
+        User worker = createUser(null);
+        worker.setEmail("worker@example.com");
+        worker.setDocumentNumber(67890L);
+
+        assertThatThrownBy(() -> userUseCase.createWorker(12345L, worker))
+                .isInstanceOf(UserAlreadyExistsException.class)
+                .hasMessageContaining(worker.getEmail());
+    }
+
+    @Test
+    void shouldNotCreateWorkerIfRestaurantNotFound() {
+        User worker = createUser(null);
+        worker.setEmail("worker@example.com");
+        worker.setDocumentNumber(67890L);
+
+        when(userPersistencePort.existUserByDocumentNumber(12345L)).thenReturn(true);
+        when(userPersistencePort.existUserByEmail(worker.getEmail())).thenReturn(false);
+        when(userPersistencePort.existUserByDocumentNumber(worker.getDocumentNumber())).thenReturn(false);
+        when(restaurantClientPort.getRestaurantNitByOwner()).thenReturn(null);
+
+        assertThatThrownBy(() -> userUseCase.createWorker(12345L, worker))
+                .isInstanceOf(OwnerRestaurantNotFoundException.class)
+                .hasMessageContaining("12345");
+    }
+
 }

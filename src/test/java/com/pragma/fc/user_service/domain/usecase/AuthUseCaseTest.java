@@ -17,8 +17,8 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -45,14 +45,19 @@ class AuthUseCaseTest {
     void login_shouldReturnUserWithTokens() {
         String email = "test@example.com";
         String password = "1234";
+        Long documentNumber = 12345L;
+
         User user = new User();
         user.setEmail(email);
         user.setPassword(password);
         user.setRole(Role.OWNER);
+        user.setDocumentNumber(documentNumber);
 
         when(userServicePort.findUserByEmail(email)).thenReturn(user);
-        when(tokenServicePort.generateAccessToken(eq(email), any(Map.class))).thenReturn("access-token");
-        when(tokenServicePort.generateRefreshToken(email)).thenReturn("refresh-token");
+        when(tokenServicePort.generateAccessToken(eq(documentNumber.toString()), any(Map.class)))
+                .thenReturn("access-token");
+        when(tokenServicePort.generateRefreshToken(documentNumber.toString()))
+                .thenReturn("refresh-token");
 
         UseCaseUserWithTokenOutput result = authUseCase.login(email, password);
 
@@ -63,8 +68,8 @@ class AuthUseCaseTest {
 
         verify(tokenAuthenticationPort, times(1)).authenticate(email, password);
         verify(userServicePort, times(1)).findUserByEmail(email);
-        verify(tokenServicePort, times(1)).generateAccessToken(eq(email), any(Map.class));
-        verify(tokenServicePort, times(1)).generateRefreshToken(email);
+        verify(tokenServicePort, times(1)).generateAccessToken(eq(documentNumber.toString()), any(Map.class));
+        verify(tokenServicePort, times(1)).generateRefreshToken(documentNumber.toString());
     }
 
     @Test
@@ -76,5 +81,16 @@ class AuthUseCaseTest {
 
         assertEquals("hashed-password", result);
         verify(passwordEncryptorPort, times(1)).encrypt(plainPassword);
+    }
+
+    @Test
+    void extractSubject_shouldDelegateToTokenService() {
+        String token = "some-token";
+        when(tokenServicePort.extractSubject(token)).thenReturn("subject-value");
+
+        String result = authUseCase.extractSubject(token);
+
+        assertEquals("subject-value", result);
+        verify(tokenServicePort, times(1)).extractSubject(token);
     }
 }
