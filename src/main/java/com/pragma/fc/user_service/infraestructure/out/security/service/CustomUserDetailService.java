@@ -18,10 +18,10 @@ public class CustomUserDetailService implements UserDetailsService {
     private final IUserServicePort userServicePort;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userServicePort.findUserByEmail(username);
+    public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
+        User user = userServicePort.findUserByEmail(userEmail);
 
-        UserDetails userDetails = new UserDetails() {
+        return new UserDetails() {
             @Override
             public Collection<? extends GrantedAuthority> getAuthorities() {
                 GrantedAuthority grantedAuthority = () -> "ROLE_" + user.getRole().name();
@@ -38,7 +38,5 @@ public class CustomUserDetailService implements UserDetailsService {
                 return user.getEmail();
             }
         };
-
-        return userDetails;
     }
 }

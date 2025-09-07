@@ -1,6 +1,6 @@
 package com.pragma.fc.user_service.infraestructure.input.rest;
 
-import com.pragma.fc.user_service.application.dto.request.CreateOwnerRequestDto;
+import com.pragma.fc.user_service.application.dto.request.CreateUserRequestDto;
 import com.pragma.fc.user_service.application.dto.response.RoleResponseDto;
 import com.pragma.fc.user_service.application.dto.response.UserResponseDto;
 import com.pragma.fc.user_service.application.handler.IUserHandler;
@@ -31,7 +31,7 @@ public class UserController {
     }
 
     @Operation(
-            summary = "Create user",
+            summary = "Create owner user",
             description = "Requires role ADMIN",
             responses = {
                     @ApiResponse(responseCode = "201", description = "User created",
@@ -51,7 +51,7 @@ public class UserController {
     )
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/owner")
-    public ResponseEntity<ApiSuccess<UserResponseDto>> createOwner(@RequestBody @Valid CreateOwnerRequestDto dto) {
+    public ResponseEntity<ApiSuccess<UserResponseDto>> createOwner(@RequestBody @Valid CreateUserRequestDto dto) {
         UserResponseDto response = userHandler.createOwner(dto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -74,7 +74,7 @@ public class UserController {
             }
     )
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("{documentNumber}/role")
+    @GetMapping("/{documentNumber}/role")
     public ResponseEntity<ApiSuccess<RoleResponseDto>> getUserRole(@PathVariable Long documentNumber) {
         RoleResponseDto response = userHandler.getUserRole(documentNumber);
 

@@ -1,12 +1,12 @@
 package com.pragma.fc.user_service.infraestructure.input.security.filter;
 
 import com.pragma.fc.user_service.domain.spi.ITokenServicePort;
+import com.pragma.fc.user_service.infraestructure.input.security.entity.JwtAuthenticationToken;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -48,18 +48,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String userEmail = tokenServicePort.extractSubject(token);
+        String documentNumberStr = tokenServicePort.extractSubject(token);
         String role = tokenServicePort.extractRole(token);
-        if (userEmail == null || role == null) {
+        if (documentNumberStr == null || role == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
         GrantedAuthority authorities = new SimpleGrantedAuthority("ROLE_" + role);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(
-                userEmail,
-                null,
-                List.of(authorities)
+        Authentication authentication = new JwtAuthenticationToken(
+                documentNumberStr,
+                List.of(authorities),
+                token
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         filterChain.doFilter(request, response);
