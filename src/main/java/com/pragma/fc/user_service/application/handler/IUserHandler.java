@@ -10,4 +10,6 @@ public interface IUserHandler {
     RoleResponseDto getUserRole(Long documentNumber);
 
     UserResponseDto createWorker(CreateUserRequestDto dto);
+
+    UserResponseDto createCustomer(CreateUserRequestDto dto);
 }

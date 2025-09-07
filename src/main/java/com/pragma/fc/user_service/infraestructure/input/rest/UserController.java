@@ -117,4 +117,27 @@ public class UserController {
                 ));
     }
 
+    @Operation(
+            summary = "Create customer user",
+            description = "Not requires token",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "User created",
+                            content = @Content(schema = @Schema(implementation = UserResponseDto.class))),
+                    @ApiResponse(responseCode = "409", description = "User already exists",
+                            content = @Content(schema = @Schema(implementation = ApiError.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid request body format",
+                            content = @Content(schema = @Schema(implementation = ApiError.class))),
+            }
+    )
+    @PostMapping("/customer")
+    public ResponseEntity<ApiSuccess<UserResponseDto>> createCustomer(@RequestBody @Valid CreateUserRequestDto dto) {
+        UserResponseDto response = userHandler.createCustomer(dto);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new ApiSuccess<>(
+                        "Customer created successfully",
+                        response
+                ));
+    }
+
 }

@@ -55,4 +55,11 @@ public class UserHandler implements IUserHandler {
         User newOwner = userServicePort.createWorker(ownerDocumentNumber, user);
         return userResponseMapper.toDto(newOwner);
     }
+
+    @Override
+    public UserResponseDto createCustomer(CreateUserRequestDto dto) {
+        User user = createUserRequestMapper.toModel(dto);
+        User newOwner = userServicePort.createCustomer(user);
+        return userResponseMapper.toDto(newOwner);
+    }
 }

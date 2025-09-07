@@ -220,4 +220,45 @@ class UserUseCaseTest {
                 .hasMessageContaining("12345");
     }
 
+    @Test
+    void shouldCreateCustomerSuccessfully() {
+        when(userPersistencePort.existUserByEmail(anyString())).thenReturn(false);
+        when(userPersistencePort.existUserByDocumentNumber(anyLong())).thenReturn(false);
+        when(authServicePort.encryptPassword(anyString())).thenReturn("encryptedPass");
+        when(userPersistencePort.createUser(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        User user = createUser(null); // role null, será asignado como CUSTOMER
+        User newCustomer = userUseCase.createCustomer(user);
+
+        assertThat(newCustomer.getRole()).isEqualTo(Role.CUSTOMER);
+        assertThat(newCustomer.getPassword()).isEqualTo("encryptedPass");
+        verify(userPersistencePort).createUser(argThat(u ->
+                u.getRole() == Role.CUSTOMER &&
+                        u.getDocumentNumber() == 12345L
+        ));
+    }
+
+    @Test
+    void shouldNotCreateCustomerIfEmailAlreadyExists() {
+        when(userPersistencePort.existUserByEmail(anyString())).thenReturn(true);
+
+        User user = createUser(null);
+
+        assertThatThrownBy(() -> userUseCase.createCustomer(user))
+                .isInstanceOf(UserAlreadyExistsException.class)
+                .hasMessageContaining(user.getEmail());
+    }
+
+    @Test
+    void shouldNotCreateCustomerIfDocumentNumberAlreadyExists() {
+        when(userPersistencePort.existUserByEmail(anyString())).thenReturn(false);
+        when(userPersistencePort.existUserByDocumentNumber(anyLong())).thenReturn(true);
+
+        User user = createUser(null);
+
+        assertThatThrownBy(() -> userUseCase.createCustomer(user))
+                .isInstanceOf(UserAlreadyExistsException.class)
+                .hasMessageContaining(user.getDocumentNumber().toString());
+    }
+
 }
