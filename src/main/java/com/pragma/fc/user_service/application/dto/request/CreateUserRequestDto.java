@@ -13,7 +13,7 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class CreateOwnerRequestDto {
+public class CreateUserRequestDto {
     @NotNull
     private Long documentNumber;
 

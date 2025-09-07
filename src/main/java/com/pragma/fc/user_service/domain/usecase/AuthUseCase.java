@@ -33,8 +33,8 @@ public class AuthUseCase implements IAuthServicePort {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", user.getRole());
 
-        String accessToken = tokenServicePort.generateAccessToken(user.getEmail(), claims);
-        String refreshToken = tokenServicePort.generateRefreshToken(user.getEmail());
+        String accessToken = tokenServicePort.generateAccessToken(user.getDocumentNumber().toString(), claims);
+        String refreshToken = tokenServicePort.generateRefreshToken(user.getDocumentNumber().toString());
 
         return new UseCaseUserWithTokenOutput(user, accessToken, refreshToken);
     }
@@ -42,5 +42,10 @@ public class AuthUseCase implements IAuthServicePort {
     @Override
     public String encryptPassword(String plainPassword) {
         return passwordEncryptorPort.encrypt(plainPassword);
+    }
+
+    @Override
+    public String extractSubject(String token) {
+        return tokenServicePort.extractSubject(token);
     }
 }

@@ -13,4 +13,6 @@ public interface IUserPersistencePort {
     Role getRoleByUserDocumentNumber(Long documentNumber);
 
     User findUserByEmail(String email);
+
+    User findUserByDocumentNumber(Long documentNumber);
 }

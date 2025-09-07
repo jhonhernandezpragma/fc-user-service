@@ -6,4 +6,6 @@ public interface IAuthServicePort {
     UseCaseUserWithTokenOutput login(String email, String password);
 
     String encryptPassword(String plainPassword);
+
+    String extractSubject(String token);
 }

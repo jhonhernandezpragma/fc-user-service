@@ -85,4 +85,36 @@ public class UserController {
                         response
                 ));
     }
+
+    @Operation(
+            summary = "Create worker user",
+            description = "Requires role OWNER",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "User created",
+                            content = @Content(schema = @Schema(implementation = UserResponseDto.class))),
+                    @ApiResponse(responseCode = "409", description = "User already exists",
+                            content = @Content(schema = @Schema(implementation = ApiError.class))),
+                    @ApiResponse(responseCode = "400", description = """
+                            1. Invalid request body format
+                            2. User must be at least 18 years old
+                            """,
+                            content = @Content(schema = @Schema(implementation = ApiError.class))),
+                    @ApiResponse(responseCode = "401", description = "User already exists",
+                            content = @Content(schema = @Schema(implementation = ApiError.class))),
+                    @ApiResponse(responseCode = "403", description = "Missing or invalid access token",
+                            content = @Content(schema = @Schema(implementation = ApiError.class))),
+            }
+    )
+    @PreAuthorize("hasRole('OWNER')")
+    @PostMapping("/worker")
+    public ResponseEntity<ApiSuccess<UserResponseDto>> createWorker(@RequestBody @Valid CreateUserRequestDto dto) {
+        UserResponseDto response = userHandler.createWorker(dto);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new ApiSuccess<>(
+                        "Worker created successfully",
+                        response
+                ));
+    }
+
 }
