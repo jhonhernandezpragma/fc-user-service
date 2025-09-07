@@ -13,4 +13,6 @@ public interface IUserServicePort {
     User findUserByEmail(String email);
 
     User findUserByDocumentNumber(Long documentNumber);
+
+    User createCustomer(User user);
 }

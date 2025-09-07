@@ -62,6 +62,22 @@ public class UserUseCase implements IUserServicePort {
     }
 
     @Override
+    public User createCustomer(User user) {
+        Boolean existsUserByEmail = userPersistencePort.existUserByEmail(user.getEmail());
+        Boolean existsUserByDocumentNumber = userPersistencePort.existUserByDocumentNumber(user.getDocumentNumber());
+        if (existsUserByEmail || existsUserByDocumentNumber) {
+            throw new UserAlreadyExistsException("A user with email " + user.getEmail() + " or document " + user.getDocumentNumber() + " already exists");
+        }
+
+        String encryptedPassword = authServicePort.encryptPassword(user.getPassword());
+        user.setPassword(encryptedPassword);
+
+        user.setRole(Role.CUSTOMER);
+
+        return userPersistencePort.createUser(user);
+    }
+
+    @Override
     public User createWorker(Long ownerDocumentNumber, User user) {
         Boolean existsOwnerByDocumentNumber = userPersistencePort.existUserByDocumentNumber(ownerDocumentNumber);
         if (!existsOwnerByDocumentNumber) {
