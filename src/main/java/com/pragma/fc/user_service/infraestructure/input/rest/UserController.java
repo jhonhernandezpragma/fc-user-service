@@ -43,9 +43,9 @@ public class UserController {
                             2. User must be at least 18 years old
                             """,
                             content = @Content(schema = @Schema(implementation = ApiError.class))),
-                    @ApiResponse(responseCode = "401", description = "User already exists",
+                    @ApiResponse(responseCode = "401", description = "Unauthorized: missing or invalid access token",
                             content = @Content(schema = @Schema(implementation = ApiError.class))),
-                    @ApiResponse(responseCode = "403", description = "Missing or invalid access token",
+                    @ApiResponse(responseCode = "403", description = "Forbidden: requires role OWNER",
                             content = @Content(schema = @Schema(implementation = ApiError.class))),
             }
     )
@@ -67,9 +67,9 @@ public class UserController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "User role retrieved successfully",
                             content = @Content(schema = @Schema(implementation = RoleResponseDto.class))),
-                    @ApiResponse(responseCode = "401", description = "User already exists",
+                    @ApiResponse(responseCode = "401", description = "Unauthorized: missing or invalid access token",
                             content = @Content(schema = @Schema(implementation = ApiError.class))),
-                    @ApiResponse(responseCode = "403", description = "Missing or invalid access token",
+                    @ApiResponse(responseCode = "403", description = "Forbidden: requires role OWNER",
                             content = @Content(schema = @Schema(implementation = ApiError.class)))
             }
     )
@@ -99,9 +99,9 @@ public class UserController {
                             2. User must be at least 18 years old
                             """,
                             content = @Content(schema = @Schema(implementation = ApiError.class))),
-                    @ApiResponse(responseCode = "401", description = "User already exists",
+                    @ApiResponse(responseCode = "401", description = "Unauthorized: missing or invalid access token",
                             content = @Content(schema = @Schema(implementation = ApiError.class))),
-                    @ApiResponse(responseCode = "403", description = "Missing or invalid access token",
+                    @ApiResponse(responseCode = "403", description = "Forbidden: requires role OWNER",
                             content = @Content(schema = @Schema(implementation = ApiError.class))),
             }
     )
