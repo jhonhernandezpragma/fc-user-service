@@ -2,8 +2,10 @@ package com.pragma.fc.user_service.infraestructure.exceptionHandler;
 
 import com.pragma.fc.user_service.domain.exception.UserAlreadyExistsException;
 import com.pragma.fc.user_service.domain.exception.UserUnderageException;
+import com.pragma.fc.user_service.infraestructure.exception.RestaurantNotFoundException;
 import com.pragma.fc.user_service.infraestructure.exception.RoleNotFoundException;
 import com.pragma.fc.user_service.infraestructure.exception.UserNotFoundException;
+import com.pragma.fc.user_service.infraestructure.exception.WorkerAssignmentFailedException;
 import com.pragma.fc.user_service.infraestructure.input.rest.dto.ApiError;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -35,5 +37,15 @@ public class UserExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ApiError> handleUserNotFound(UserNotFoundException ex, WebRequest request) {
         return ErrorUtils.buildError(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(WorkerAssignmentFailedException.class)
+    public ResponseEntity<ApiError> handleWorkerAssignmentFailed(WorkerAssignmentFailedException ex, WebRequest request) {
+        return ErrorUtils.buildError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(RestaurantNotFoundException.class)
+    public ResponseEntity<ApiError> handleRestaurantNotFound(RestaurantNotFoundException ex, WebRequest request) {
+        return ErrorUtils.buildError(HttpStatus.NOT_FOUND, ex.getMessage(), request);
     }
 }

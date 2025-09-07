@@ -2,8 +2,11 @@ package com.pragma.fc.user_service.infraestructure.configuration;
 
 import com.pragma.fc.user_service.domain.api.IAuthServicePort;
 import com.pragma.fc.user_service.domain.api.IUserServicePort;
+import com.pragma.fc.user_service.domain.spi.IRestaurantClientPort;
 import com.pragma.fc.user_service.domain.spi.IUserPersistencePort;
 import com.pragma.fc.user_service.domain.usecase.UserUseCase;
+import com.pragma.fc.user_service.infraestructure.out.feign.adapter.RestaurantFeignAdapter;
+import com.pragma.fc.user_service.infraestructure.out.feign.client.IRestaurantClientFeign;
 import com.pragma.fc.user_service.infraestructure.out.jpa.adapter.UserJpaAdapter;
 import com.pragma.fc.user_service.infraestructure.out.jpa.mapper.IRoleEntityMapper;
 import com.pragma.fc.user_service.infraestructure.out.jpa.mapper.IUserEntityMapper;
@@ -21,14 +24,20 @@ public class UserBeanConfiguration {
     private final IRoleEntityMapper roleEntityMapper;
     private final IUserRepository userRepository;
     private final IRoleRepository roleRepository;
+    private final IRestaurantClientFeign restaurantClientFeign;
 
     @Bean
     public IUserServicePort userServicePort(@Lazy IAuthServicePort authServicePort) {
-        return new UserUseCase(userPersistencePort(), authServicePort);
+        return new UserUseCase(userPersistencePort(), authServicePort, restaurantClientPort());
     }
 
     @Bean
     public IUserPersistencePort userPersistencePort() {
         return new UserJpaAdapter(userRepository, roleRepository, userEntityMapper, roleEntityMapper);
+    }
+
+    @Bean
+    public IRestaurantClientPort restaurantClientPort() {
+        return new RestaurantFeignAdapter(restaurantClientFeign);
     }
 }
