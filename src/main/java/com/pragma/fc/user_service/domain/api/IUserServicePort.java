@@ -1,6 +1,5 @@
 package com.pragma.fc.user_service.domain.api;
 
-import com.pragma.fc.user_service.domain.model.Role;
 import com.pragma.fc.user_service.domain.model.User;
 
 public interface IUserServicePort {
@@ -8,7 +7,7 @@ public interface IUserServicePort {
 
     User createWorker(Long ownerDocumentNumber, User user);
 
-    Role getUserRole(Long documentNumber);
+    User getUserByDocumentNumber(Long documentNumber);
 
     User findUserByEmail(String email);
 

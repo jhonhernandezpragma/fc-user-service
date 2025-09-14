@@ -1,14 +1,12 @@
 package com.pragma.fc.user_service.application.handler;
 
 import com.pragma.fc.user_service.application.dto.request.CreateUserRequestDto;
-import com.pragma.fc.user_service.application.dto.response.RoleResponseDto;
 import com.pragma.fc.user_service.application.dto.response.UserResponseDto;
 import com.pragma.fc.user_service.application.mapper.ICreateUserRequestMapper;
 import com.pragma.fc.user_service.application.mapper.IRoleResponseMapper;
 import com.pragma.fc.user_service.application.mapper.IUserResponseMapper;
 import com.pragma.fc.user_service.domain.api.IAuthServicePort;
 import com.pragma.fc.user_service.domain.api.IUserServicePort;
-import com.pragma.fc.user_service.domain.model.Role;
 import com.pragma.fc.user_service.domain.model.User;
 import com.pragma.fc.user_service.infraestructure.input.security.entity.JwtAuthenticationToken;
 import jakarta.transaction.Transactional;
@@ -35,9 +33,9 @@ public class UserHandler implements IUserHandler {
     }
 
     @Override
-    public RoleResponseDto getUserRole(Long documentNumber) {
-        Role role = userServicePort.getUserRole(documentNumber);
-        return roleResponseMapper.toDto(role);
+    public UserResponseDto getUserByDocumentNumber(Long documentNumber) {
+        User user = userServicePort.getUserByDocumentNumber(documentNumber);
+        return userResponseMapper.toDto(user);
     }
 
     @Override

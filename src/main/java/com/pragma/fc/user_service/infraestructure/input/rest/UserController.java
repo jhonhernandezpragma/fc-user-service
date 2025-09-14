@@ -63,25 +63,25 @@ public class UserController {
 
     @Operation(
             summary = "Obtain user",
-            description = "Requires role ADMIN",
+            description = "Requires role OWNER or WORKER",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "User role retrieved successfully",
+                    @ApiResponse(responseCode = "200", description = "User retrieved successfully",
                             content = @Content(schema = @Schema(implementation = RoleResponseDto.class))),
                     @ApiResponse(responseCode = "401", description = "Unauthorized: missing or invalid access token",
                             content = @Content(schema = @Schema(implementation = ApiError.class))),
-                    @ApiResponse(responseCode = "403", description = "Forbidden: requires role OWNER",
+                    @ApiResponse(responseCode = "403", description = "Forbidden: requires role OWNER or WORKER",
                             content = @Content(schema = @Schema(implementation = ApiError.class)))
             }
     )
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/{documentNumber}/role")
-    public ResponseEntity<ApiSuccess<RoleResponseDto>> getUserRole(@PathVariable Long documentNumber) {
-        RoleResponseDto response = userHandler.getUserRole(documentNumber);
+    @PreAuthorize("hasAnyRole('OWNER', 'WORKER')")
+    @GetMapping("/{documentNumber}/user")
+    public ResponseEntity<ApiSuccess<UserResponseDto>> getUserRole(@PathVariable Long documentNumber) {
+        UserResponseDto response = userHandler.getUserByDocumentNumber(documentNumber);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new ApiSuccess<>(
-                        "User role retrieved successfully",
+                        "User retrieved successfully",
                         response
                 ));
     }
